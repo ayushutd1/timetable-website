@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Custom Timetable</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #5a5a5a;
+            font-size: 2em;
+            margin-bottom: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .subject-checkbox {
+            margin: 10px;
+            font-size: 16px;
+            margin-right: 20px;
+        }
+
+        button {
+            display: block;
+            width: 100%;
+            background-color: #5a9;
+            color: white;
+            border: none;
+            padding: 10px;
+            font-size: 18px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+
+        button:hover {
+            background-color: #487;
+        }
+
+        table {
+            margin-top: 30px;
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            border: 1px solid #ccc;
+            padding: 10px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #f7f7f7;
+            color: #555;
+        }
+
+        td {
+            font-size: 15px;
+            color: #333;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <h1>Select your subjects:</h1>
+        <div>
+            <input type="checkbox" id="history" class="subject-checkbox">
+            <label for="history">History</label>
+
+            <input type="checkbox" id="economics" class="subject-checkbox">
+            <label for="economics">Economics</label>
+
+            <input type="checkbox" id="maths" class="subject-checkbox">
+            <label for="maths">Mathematics</label>
+
+            <input type="checkbox" id="politicalScience" class="subject-checkbox">
+            <label for="politicalScience">Political Science</label>
+
+            <input type="checkbox" id="sociology" class="subject-checkbox">
+            <label for="sociology">Sociology</label>
+
+            <input type="checkbox" id="english" class="subject-checkbox">
+            <label for="english">English</label>
+
+            <input type="checkbox" id="compScience" class="subject-checkbox">
+            <label for="compScience">Computer Science</label>
+        </div>
+        <button onclick="generateTimetable()">Generate Timetable</button>
+
+        <div id="timetable-container"></div>
+    </div>
+
+    <script>
+        const timetableData = {
+            history: {
+                Saturday: "History 11:30 - 12:30 (Period 4)"
+            },
+            economics: {
+                Monday: "Economics P1 12:30 - 1:30 (Period 5)",
+                Tuesday: "Economics P2 12:30 - 1:30 (Period 5)",
+                Wednesday: "Economics P1 8:30 - 9:30 (Period 1), Economics P2 11:30 - 12:30 (Period 4)",
+                Thursday: "Eco P2 Tutorial 8:30 - 9:30 (Period 1)",
+                Friday: "Economics P1 8:30 - 9:30 (Period 1), Economics P2 11:30 - 12:30 (Period 4)"
+            },
+            maths: {
+                Monday: "Maths P1 9:30 - 10:30 (Period 2), Maths P2 12:30 - 1:30 (Period 5)",
+                Tuesday: "Maths P2 12:30 - 1:30 (Period 5)",
+                Wednesday: "Maths P2 12:30 - 1:30 (Period 5), 3:30 - 4:30 (Period 8)",
+                Thursday: "Maths P1 11:30 - 12:30 (Period 4), Maths P2 12:30 - 1:30 (Period 5)",
+                Friday: "Maths P1 9:30 - 10:30 (Period 2)"
+            },
+            politicalScience: {
+                Monday: "Pol Sc A/B - P1: 8:30 - 9:30 (Period 1), 11:30 - 12:30 (Period 4)",
+                Tuesday: "Pol Sc A/B - P1 9:30 - 10:30 (Period 2), Pol Sc A/B - P2 2:30 - 3:30 (Period 7)",
+                Wednesday: "Pol Sc B - P2 11:30 - 12:30 (Period 4)",
+                Thursday: "Pol Sc B - P1 11:30 - 12:30 (Period 4), Pol Sc A/B - P2 2:30 - 3:30 (Period 7), TUT 3:30 - 4:30 (Period 8)",
+                Saturday: "Pol Sc A/B - P2 11:30 - 12:30 (Period 4)"
+            },
+            sociology: {
+                Monday: "Visual Culture 3:30 - 4:30 (Period 8), Sociology and Social Policy 4:30 - 5:30 (Period 9)",
+                Wednesday: "Sociology and Social Policy 3:30 - 4:30 (Period 8), 4:30 - 5:30 (Period 9)",
+                Thursday: "Sociology and Social Policy 3:30 - 4:30 (Period 8), Visual Culture 4:30 - 5:30 (Period 9)",
+                Friday: "Sociology 9:30 - 10:30 (Period 2)",
+                Saturday: "Sociology 9:30 - 10:30 (Period 2)"
+            },
+            english: {
+                Monday: "Eng P1 11:30 - 12:30 (Period 4), Eng P2 12:30 - 1:30 (Period 5)",
+                Tuesday: "Eng P1 9:30 - 10:30 (Period 2), Eng P2 3:30 - 4:30 (Period 8)",
+                Wednesday: "Eng P1 11:30 - 12:30 (Period 4), Eng P2 3:30 - 4:30 (Period 8)",
+                Saturday: "Eng P1 9:30 - 10:30 (Period 2), Eng P2 10:30 - 11:30 (Period 3)"
+            },
+            compScience: {
+                Thursday: "C.Sc P2 Theory 12:30 - 1:30 (Period 5), C.Sc P2 PR 1:30 - 2:30 (Period 6), 3:30 - 4:30 (Period 8)",
+                Friday: "C.Sc P2 Theory 11:30 - 12:30 (Period 4)"
+            }
+        };
+
+        function generateTimetable() {
+            let selectedSubjects = [];
+            document.querySelectorAll('.subject-checkbox:checked').forEach(checkbox => {
+                selectedSubjects.push(checkbox.id);
+            });
+
+            let timetable = "<table><tr><th>Day</th><th>Subjects</th></tr>";
+
+            const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+
+            days.forEach(day => {
+                let subjectsOnDay = [];
+                selectedSubjects.forEach(subject => {
+                    if (timetableData[subject] && timetableData[subject][day]) {
+                        subjectsOnDay.push(timetableData[subject][day]);
+                    }
+                });
+
+                timetable += `<tr><td>${day}</td><td>${subjectsOnDay.join("<br>")}</td></tr>`;
+            });
+
+            timetable += "</table>";
+            document.getElementById('timetable-container').innerHTML = timetable;
+        }
+    </script>
+</body>
+
+</html>
